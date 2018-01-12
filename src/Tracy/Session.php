@@ -9,17 +9,6 @@ class Session implements ISession
 {
     private $globalKey = '_tracy';
 
-    public function __construct()
-    {
-        if (!isset($_SESSION)) {
-            $_SESSION = [];
-        }
-
-        if (!isset($_SESSION[$this->globalKey])) {
-            $_SESSION[$this->globalKey] = [];
-        }
-    }
-
     /**
      * @inheritdoc
      */
@@ -46,6 +35,10 @@ class Session implements ISession
      */
     public function setValue($key, $value)
     {
+        if (!isset($_SESSION[$this->globalKey])) {
+            $_SESSION[$this->globalKey] = [];
+        }
+
         $keys = (array)$key;
         $node = &$_SESSION[$this->globalKey];
 
@@ -65,6 +58,10 @@ class Session implements ISession
      */
     public function getValue($key)
     {
+        if (!isset($_SESSION[$this->globalKey])) {
+            $_SESSION[$this->globalKey] = [];
+        }
+
         $keys = (array)$key;
         $node = $_SESSION[$this->globalKey];
 
