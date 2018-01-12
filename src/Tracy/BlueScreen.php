@@ -58,12 +58,16 @@ class BlueScreen
 	 */
 	public function render($exception)
 	{
-		if (Helpers::isAjax() && session_status() === PHP_SESSION_ACTIVE) {
+        $sessionHandler = Debugger::getSessionHandler();
+        if (Helpers::isAjax() && $sessionHandler->isActive()) {
 			ob_start(function () {});
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/content.phtml');
 			$contentId = $_SERVER['HTTP_X_TRACY_AJAX'];
-			$_SESSION['_tracy']['bluescreen'][$contentId] = ['content' => ob_get_clean(), 'dumps' => Dumper::fetchLiveData(), 'time' => time()];
-
+			$sessionHandler->setValue(['bluescreen', $contentId], [
+			    'content' => ob_get_clean(),
+                'dumps' => Dumper::fetchLiveData(),
+                'time' => time(),
+            ]);
 		} else {
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/page.phtml');
 		}
