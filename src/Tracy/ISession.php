@@ -24,7 +24,7 @@ interface ISession
     /**
      * Sets value for key
      *
-     * @param string $key
+     * @param string|array $key
      * @param mixed $value
      * @return void
      */
@@ -33,7 +33,7 @@ interface ISession
     /**
      * Returns value by key
      *
-     * @param string $key
+     * @param string|array $key
      * @return mixed
      */
     public function getValue($key);
