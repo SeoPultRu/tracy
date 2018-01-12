@@ -47,17 +47,17 @@ class Session implements ISession
     public function setValue($key, $value)
     {
         $keys = (array)$key;
-        $session = &$_SESSION[$this->globalKey];
+        $node = &$_SESSION[$this->globalKey];
 
         foreach ($keys as $keyNode) {
-            if (!isset($session[$keyNode])) {
-                $session[$keyNode] = [];
+            if (!isset($node[$keyNode])) {
+                $node[$keyNode] = [];
             }
 
-            $session = &$session[$keyNode];
+            $node = &$node[$keyNode];
         }
 
-        $session = $value;
+        $node = $value;
     }
 
     /**
@@ -65,41 +65,15 @@ class Session implements ISession
      */
     public function getValue($key)
     {
-        return $this->getValueByArray((array)$key);
-    }
-
-    /**
-     * Returns value by keys array
-     *
-     * @param array $keys
-     * @param bool $create if true, nodes will be created
-     * @return mixed
-     */
-    private function getValueByArray(array $keys, $create = false)
-    {
+        $keys = (array)$key;
         $node = $_SESSION[$this->globalKey];
-        $currentKey = [];
 
-        foreach ($keys as $key) {
-            if ($node === null) {
-                if ($create) {
-                    $this->setValue($currentKey, []);
-                    $node = [];
-                } else {
-                    return null;
-                }
+        foreach ($keys as $keyNode) {
+            if (!isset($node[$keyNode])) {
+                return null;
             }
 
-            $currentKey[] = $key;
-            if (!isset($node[$key])) {
-                if ($create) {
-                    $this->setValue($currentKey, null);
-                } else {
-                    return null;
-                }
-            }
-
-            $node = $node[$key];
+            $node = $node[$keyNode];
         }
 
         return $node;
