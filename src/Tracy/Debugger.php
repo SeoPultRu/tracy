@@ -126,6 +126,11 @@ class Debugger
 	/** @var ILogger */
 	private static $fireLogger;
 
+    /**
+     * @var ISession
+     */
+	private static $sessionHandler;
+
 
 	/**
 	 * Static class - cannot be instantiated.
@@ -215,13 +220,11 @@ class Debugger
 				. ($file ? "Output started at $file:$line." : 'Try Tracy\OutputDebugger to find where output started.')
 			);
 
-		} elseif (self::$enabled && session_status() !== PHP_SESSION_ACTIVE) {
-			ini_set('session.use_cookies', '1');
-			ini_set('session.use_only_cookies', '1');
-			ini_set('session.use_trans_sid', '0');
-			ini_set('session.cookie_path', '/');
-			ini_set('session.cookie_httponly', '1');
-			session_start();
+		} elseif (self::$enabled) {
+            $session = self::getSessionHandler();
+		    if (!$session->isActive()) {
+                $session->activate();
+            }
 		}
 
 		if (self::getBar()->dispatchAssets()) {
@@ -515,6 +518,27 @@ class Debugger
 		}
 		return self::$fireLogger;
 	}
+
+    /**
+     * @param ISession $session
+     * @return void
+     */
+	public static function setSessionHandler(ISession $session)
+    {
+        self::$sessionHandler = $session;
+    }
+
+    /**
+     * @return ISession
+     */
+    public static function getSessionHandler()
+    {
+        if (!self::$sessionHandler) {
+            self::$sessionHandler = new Session;
+        }
+
+        return self::$sessionHandler;
+    }
 
 
 	/********************* useful tools ****************d*g**/
