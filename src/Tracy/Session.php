@@ -40,10 +40,13 @@ class Session implements ISession
     public function setValue($key, $value)
     {
         $keys = (array)$key;
-        $this->getValueByArray($keys, true);
         $session = &$_SESSION[$this->globalKey];
 
         foreach ($keys as $keyNode) {
+            if (!isset($session[$keyNode])) {
+                $session[$keyNode] = [];
+            }
+
             $session = &$session[$keyNode];
         }
 
