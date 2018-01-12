@@ -75,47 +75,60 @@ class Bar
 	 */
 	public function render()
 	{
-		$useSession = $this->useSession && session_status() === PHP_SESSION_ACTIVE;
-		$redirectQueue = &$_SESSION['_tracy']['redirect'];
+        $sessionHandler = Debugger::getSessionHandler();
+        $useSession = $this->useSession && $sessionHandler->isActive();
 
 		foreach (['bar', 'redirect', 'bluescreen'] as $key) {
-			$queue = &$_SESSION['_tracy'][$key];
+			$queue = $sessionHandler->getValue($key);
 			$queue = array_slice((array) $queue, -10, null, true);
 			$queue = array_filter($queue, function ($item) {
 				return isset($item['time']) && $item['time'] > time() - 60;
 			});
+
+            $sessionHandler->setValue($key, $queue);
 		}
 
 		if (Helpers::isAjax()) {
 			if ($useSession) {
 				$rows[] = (object) ['type' => 'ajax', 'panels' => $this->renderPanels('-ajax')];
 				$contentId = $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax';
-				$_SESSION['_tracy']['bar'][$contentId] = ['content' => self::renderHtmlRows($rows), 'dumps' => Dumper::fetchLiveData(), 'time' => time()];
+				$sessionHandler->setValue(['bar', $contentId], [
+				    'content' => self::renderHtmlRows($rows),
+                    'dumps' => Dumper::fetchLiveData(),
+                    'time' => time(),
+                ]);
 			}
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
 			if ($useSession) {
+                $redirectQueue = $sessionHandler->getValue('redirect');
+                $redirectQueueCount = count($redirectQueue);
 				Dumper::fetchLiveData();
-				Dumper::$livePrefix = count($redirectQueue) . 'p';
+				Dumper::$livePrefix = $redirectQueueCount . 'p';
+
 				$redirectQueue[] = [
-					'panels' => $this->renderPanels('-r' . count($redirectQueue)),
+					'panels' => $this->renderPanels('-r' . $redirectQueueCount),
 					'dumps' => Dumper::fetchLiveData(),
 					'time' => time(),
 				];
+				$sessionHandler->setValue('redirect', $redirectQueue);
 			}
-
 		} elseif (Helpers::isHtmlMode()) {
 			$rows[] = (object) ['type' => 'main', 'panels' => $this->renderPanels()];
 			$dumps = Dumper::fetchLiveData();
-			foreach (array_reverse((array) $redirectQueue) as $info) {
+			foreach (array_reverse((array) $sessionHandler->getValue('redirect')) as $info) {
 				$rows[] = (object) ['type' => 'redirect', 'panels' => $info['panels']];
 				$dumps += $info['dumps'];
 			}
-			$redirectQueue = null;
+            $sessionHandler->setValue('redirect', null);
 			$content = self::renderHtmlRows($rows);
 
 			if ($this->contentId) {
-				$_SESSION['_tracy']['bar'][$this->contentId] = ['content' => $content, 'dumps' => $dumps, 'time' => time()];
+			    $sessionHandler->setValue(['bar', $this->contentId], [
+			        'content' => $content,
+                    'dumps' => $dumps,
+                    'time' => time(),
+                ]);
 			} else {
 				$contentId = substr(md5(uniqid('', true)), 0, 10);
 				$nonce = Helpers::getNonce();
@@ -197,30 +210,39 @@ class Bar
 			return true;
 		}
 
-		$this->useSession = session_status() === PHP_SESSION_ACTIVE;
+        $sessionHandler = Debugger::getSessionHandler();
+        $this->useSession = $sessionHandler->isActive();
 
 		if ($this->useSession && Helpers::isAjax()) {
 			header('X-Tracy-Ajax: 1'); // session must be already locked
 		}
 
 		if ($this->useSession && $asset && preg_match('#^content(-ajax)?\.(\w+)$#', $asset, $m)) {
-			$session = &$_SESSION['_tracy']['bar'][$m[2] . $m[1]];
 			header('Content-Type: text/javascript');
 			header('Cache-Control: max-age=60');
 			header_remove('Set-Cookie');
+
 			if (!$m[1]) {
 				$this->renderAssets();
 			}
+
+            $sessionKey = ['bar', $m[2] . $m[1]];
+            $session = $sessionHandler->getValue($sessionKey);
+
 			if ($session) {
 				$method = $m[1] ? 'loadAjax' : 'init';
 				echo "Tracy.Debug.$method(", json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-				$session = null;
+                $sessionHandler->setValue($sessionKey, null);
 			}
-			$session = &$_SESSION['_tracy']['bluescreen'][$m[2]];
+
+			$sessionKey = ['bluescreen', $m[2]];
+            $session = $sessionHandler->getValue($sessionKey);
+
 			if ($session) {
 				echo 'Tracy.BlueScreen.loadAjax(', json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-				$session = null;
+                $sessionHandler->setValue($sessionKey, null);
 			}
+
 			return true;
 		}
 	}
