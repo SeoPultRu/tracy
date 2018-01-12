@@ -58,6 +58,13 @@ class Session implements ISession
         return $this->getValueByArray((array)$key);
     }
 
+    /**
+     * Returns value by keys array
+     *
+     * @param array $keys
+     * @param bool $create if true, nodes will be created
+     * @return mixed
+     */
     private function getValueByArray(array $keys, $create = false)
     {
         $node = $_SESSION[$this->globalKey];
