@@ -20,6 +20,10 @@ class Session implements ISession
         ini_set('session.cookie_path', '/');
         ini_set('session.cookie_httponly', '1');
         session_start();
+
+        if (!isset($_SESSION[$this->globalKey])) {
+            $_SESSION[$this->globalKey] = [];
+        }
     }
 
     /**
@@ -35,7 +39,15 @@ class Session implements ISession
      */
     public function setValue($key, $value)
     {
-        $_SESSION[$this->globalKey][$key] = $value;
+        $keys = (array)$key;
+        $this->getValueByArray($keys, true);
+        $session = &$_SESSION[$this->globalKey];
+
+        foreach ($keys as $keyNode) {
+            $session = &$session[$keyNode];
+        }
+
+        $session = $value;
     }
 
     /**
@@ -43,6 +55,36 @@ class Session implements ISession
      */
     public function getValue($key)
     {
-        return $_SESSION[$this->globalKey][$key];
+        return $this->getValueByArray((array)$key);
+    }
+
+    private function getValueByArray(array $keys, $create = false)
+    {
+        $node = $_SESSION[$this->globalKey];
+        $currentKey = [];
+
+        foreach ($keys as $key) {
+            if ($node === null) {
+                if ($create) {
+                    $this->setValue($currentKey, []);
+                    $node = $this->getValue($currentKey);
+                } else {
+                    return null;
+                }
+            }
+
+            $currentKey[] = $key;
+            if (!isset($node[$key])) {
+                if ($create) {
+                    $this->setValue($currentKey, null);
+                } else {
+                    return null;
+                }
+            }
+
+            $node = $this->getValue($currentKey);
+        }
+
+        return $node;
     }
 }
