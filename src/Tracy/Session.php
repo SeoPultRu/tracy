@@ -77,7 +77,7 @@ class Session implements ISession
             if ($node === null) {
                 if ($create) {
                     $this->setValue($currentKey, []);
-                    $node = $this->getValue($currentKey);
+                    $node = [];
                 } else {
                     return null;
                 }
@@ -92,7 +92,7 @@ class Session implements ISession
                 }
             }
 
-            $node = $this->getValue($currentKey);
+            $node = $node[$key];
         }
 
         return $node;
