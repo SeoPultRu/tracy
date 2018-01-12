@@ -9,6 +9,17 @@ class Session implements ISession
 {
     private $globalKey = '_tracy';
 
+    public function __construct()
+    {
+        if (!isset($_SESSION)) {
+            $_SESSION = [];
+        }
+
+        if (!isset($_SESSION[$this->globalKey])) {
+            $_SESSION[$this->globalKey] = [];
+        }
+    }
+
     /**
      * @inheritdoc
      */
@@ -20,10 +31,6 @@ class Session implements ISession
         ini_set('session.cookie_path', '/');
         ini_set('session.cookie_httponly', '1');
         session_start();
-
-        if (!isset($_SESSION[$this->globalKey])) {
-            $_SESSION[$this->globalKey] = [];
-        }
     }
 
     /**
