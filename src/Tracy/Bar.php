@@ -95,7 +95,7 @@ class Bar
         foreach (['bar'] as $key) {
             $queue = $sessionHandler->getValue($key);
 
-            foreach ($queue as &$line) {
+            foreach ((array)$queue as &$line) {
                 $line = array_filter((array)$line, function ($item) {
                     return isset($item['time']) && $item['time'] > time() - 60;
                 });
