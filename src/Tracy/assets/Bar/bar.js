@@ -264,7 +264,7 @@
 
 			a.addEventListener('mouseover', function(e) {
 				if (isTargetChanged(e.relatedTarget, this) && this.rel && ['close', 'show_ajax', 'hide_ajax'].indexOf(this.rel) === -1 && !elem.classList.contains('tracy-dragged')) {
-					var panel = Debug.panels[this.rel], link = this;
+					var panel = Debug.panels[this.rel], bar = document.getElementById(Bar.prototype.id);
 					panel.focus(function() {
 						if (panel.is(Panel.PEEK)) {
 							if (panel.elem.dataset.tracyContent) {
@@ -273,8 +273,8 @@
 
 							var pos = getPosition(panel.elem);
 							setPosition(panel.elem, {
-								right: pos.right - getOffset(link).left + pos.width - getPosition(link).width - 4 + getOffset(panel.elem).left,
-								bottom: pos.bottom - getOffset(elem).top + pos.height + 4 + getOffset(panel.elem).top
+								right: pos.right - getOffset(bar).left + pos.width + 5 + getOffset(panel.elem).left,
+								bottom: pos.bottom - getOffset(elem).top + pos.height + getOffset(panel.elem).top
 							});
 						}
 					});
