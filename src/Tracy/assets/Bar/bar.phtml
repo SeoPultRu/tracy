@@ -41,7 +41,7 @@ $tabs = function ($panels) {
 	</ul>
 <?php  endif; if ($row->type === 'ajax'): ?>
 	<ul>
-		<li>AJAX</li>
+		<li title="<?= $row->url; ?>">AJAX</li>
 		<?php $tabs($row->panels) ?>
 	</ul>
 <?php endif ?>
