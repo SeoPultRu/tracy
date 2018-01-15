@@ -310,8 +310,10 @@
 			panels[i].style.display = toggle ? 'block' : 'none';
 		}
 
-		document.getElementById('tracy-ajax-show-text').style.display = toggle ? 'inline' : 'none';
-		document.getElementById('tracy-ajax-hide-text').style.display = toggle ? 'none' : 'inline';
+		document.getElementById('tracy-ajax-show-text').style.display = toggle ? 'none' : 'inline';
+		document.getElementById('tracy-ajax-hide-text').style.display = toggle ? 'inline' : 'none';
+
+		el.setAttribute('rel', toggle ? 'hide_ajax' : 'show_ajax');
 	};
 
 	Bar.prototype.savePosition = function() {

@@ -196,7 +196,11 @@ body#tracy-debug { /* in popup window */
 	display: none;
 }
 
-#tracy-ajax-toggle, #tracy-ajax-hide-text {
+#tracy-ajax-toggle {
+	display: none;
+}
+
+#tracy-ajax-hide-text {
 	display: none;
 }
 
