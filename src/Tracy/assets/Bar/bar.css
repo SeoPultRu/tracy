@@ -127,6 +127,9 @@ body#tracy-debug { /* in popup window */
 	right: 0;
 	bottom: 0;
 
+	overflow: auto;
+	max-height: 100%;
+
 	min-width: 50px;
 	white-space: nowrap;
 
