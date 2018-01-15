@@ -80,8 +80,12 @@ class Bar
 
 		foreach (['bar', 'redirect', 'bluescreen'] as $key) {
 			$queue = $sessionHandler->getValue($key);
-			$queue = array_slice((array) $queue, -10, null, true);
-			$queue = array_filter($queue, function ($item) {
+
+			if ($key === 'redirect') {
+                $queue = array_slice((array)$queue, -10, null, true);
+            }
+
+			$queue = array_filter((array)$queue, function ($item) {
 				return isset($item['time']) && $item['time'] > time() - 60;
 			});
 
