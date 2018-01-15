@@ -343,17 +343,9 @@
 	};
 
 	Debug.loadAjax = function(content, dumps) {
-		forEach(Debug.layer.querySelectorAll('.tracy-panel.tracy-ajax'), function(panel) {
-			Debug.panels[panel.id].savePosition();
-			delete Debug.panels[panel.id];
-			panel.parentNode.removeChild(panel);
-		});
-
-		var ajaxBar = document.getElementById('tracy-ajax-bar');
-
 		Debug.layer.insertAdjacentHTML('beforeend', content);
 		evalScripts(Debug.layer);
-		ajaxBar.appendChild(Debug.layer.lastElementChild);
+		document.getElementById(Bar.prototype.id).appendChild(Debug.layer.lastElementChild);
 
 		forEach(document.querySelectorAll('.tracy-panel'), function(panel) {
 			if (!Debug.panels[panel.id]) {
