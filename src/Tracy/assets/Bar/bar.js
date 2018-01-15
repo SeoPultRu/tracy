@@ -209,6 +209,7 @@
 	};
 
 	Bar.prototype.id = 'tracy-debug-bar';
+	Bar.prototype.ajaxShown = false;
 
 	Bar.prototype.init = function() {
 		this.elem = document.getElementById(this.id);
@@ -314,6 +315,7 @@
 		document.getElementById('tracy-ajax-hide-text').style.display = toggle ? '' : 'none';
 
 		el.setAttribute('rel', toggle ? 'hide_ajax' : 'show_ajax');
+		this.ajaxShown = toggle;
 	};
 
 	Bar.prototype.savePosition = function() {
@@ -365,6 +367,11 @@
 		evalScripts(Debug.layer);
 
 		var ajaxBar = Debug.layer.lastElementChild;
+
+		if(this.bar.ajaxShown) {
+			ajaxBar.style.display = '';
+		}
+
 		document.getElementById(Bar.prototype.id).appendChild(ajaxBar);
 
 		forEach(document.querySelectorAll('.tracy-panel'), function(panel) {
