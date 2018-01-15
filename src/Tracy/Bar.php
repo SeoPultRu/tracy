@@ -92,11 +92,11 @@ class Bar
 			if ($useSession) {
 				$rows[] = (object) ['type' => 'ajax', 'panels' => $this->renderPanels('-ajax')];
 				$contentId = $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax';
-				$sessionHandler->setValue(['bar', $contentId], [
+				$sessionHandler->setValue(['bar' => [$contentId => [
 				    'content' => self::renderHtmlRows($rows),
                     'dumps' => Dumper::fetchLiveData(),
                     'time' => time(),
-                ]);
+                ]]]);
 			}
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
@@ -124,11 +124,11 @@ class Bar
 			$content = self::renderHtmlRows($rows);
 
 			if ($this->contentId) {
-			    $sessionHandler->setValue(['bar', $this->contentId], [
+			    $sessionHandler->setValue(['bar' => [$this->contentId => [
 			        'content' => $content,
                     'dumps' => $dumps,
                     'time' => time(),
-                ]);
+                ]]]);
 			} else {
 				$contentId = substr(md5(uniqid('', true)), 0, 10);
 				$nonce = Helpers::getNonce();
@@ -226,21 +226,19 @@ class Bar
 				$this->renderAssets();
 			}
 
-            $sessionKey = ['bar', $m[2] . $m[1]];
-            $session = $sessionHandler->getValue($sessionKey);
+            $session = $sessionHandler->getValue(['bar', $m[2] . $m[1]]);
 
 			if ($session) {
 				$method = $m[1] ? 'loadAjax' : 'init';
 				echo "Tracy.Debug.$method(", json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-                $sessionHandler->setValue($sessionKey, null);
+                $sessionHandler->setValue(['bar' => [$m[2] . $m[1] => null]]);
 			}
 
-			$sessionKey = ['bluescreen', $m[2]];
-            $session = $sessionHandler->getValue($sessionKey);
+            $session = $sessionHandler->getValue(['bluescreen', $m[2]]);
 
 			if ($session) {
 				echo 'Tracy.BlueScreen.loadAjax(', json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-                $sessionHandler->setValue($sessionKey, null);
+                $sessionHandler->setValue(['bluescreen' => [$m[2] => null]]);
 			}
 
 			return true;
