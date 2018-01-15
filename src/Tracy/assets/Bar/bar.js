@@ -353,7 +353,7 @@
 
 		Debug.layer.insertAdjacentHTML('beforeend', content);
 		evalScripts(Debug.layer);
-		ajaxBar.appendChild(ajaxBar);
+		ajaxBar.appendChild(Debug.layer.lastElementChild);
 
 		forEach(document.querySelectorAll('.tracy-panel'), function(panel) {
 			if (!Debug.panels[panel.id]) {
