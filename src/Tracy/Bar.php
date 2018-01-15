@@ -78,7 +78,7 @@ class Bar
         $sessionHandler = Debugger::getSessionHandler();
         $useSession = $this->useSession && $sessionHandler->isActive();
 
-		foreach (['bar', 'redirect', 'bluescreen'] as $key) {
+		foreach (['redirect', 'bluescreen'] as $key) {
 			$queue = $sessionHandler->getValue($key);
 
 			if ($key === 'redirect') {
@@ -91,6 +91,18 @@ class Bar
 
             $sessionHandler->setValue($key, $queue);
 		}
+
+        foreach (['bar'] as $key) {
+            $queue = $sessionHandler->getValue($key);
+
+            foreach ($queue as &$line) {
+                $line = array_filter((array)$line, function ($item) {
+                    return isset($item['time']) && $item['time'] > time() - 60;
+                });
+            }
+
+            $sessionHandler->setValue($key, $queue);
+        }
 
 		if (Helpers::isAjax()) {
 			if ($useSession) {
