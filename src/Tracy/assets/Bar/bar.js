@@ -360,6 +360,7 @@
 	};
 
 	Debug.loadAjax = function(content, dumps) {
+		document.getElementById('tracy-ajax-toggle').style.display = 'block';
 		Debug.layer.insertAdjacentHTML('beforeend', content);
 		evalScripts(Debug.layer);
 
