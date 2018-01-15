@@ -109,8 +109,7 @@ class Bar
                     'time' => time(),
                 ];
 
-				$sessionHandler->setValue(['bar', $contentId], $barQueue);
-                ]]]);
+				$sessionHandler->setValue(['bar' => [$contentId => $barQueue]]);
 			}
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
@@ -138,12 +137,11 @@ class Bar
 			$content = self::renderHtmlRows($rows);
 
 			if ($this->contentId) {
-			    $sessionHandler->setValue(['bar', $this->contentId], [[
+			    $sessionHandler->setValue(['bar' => [$this->contentId => [[
 			        'content' => $content,
                     'dumps' => $dumps,
                     'time' => time(),
-                ]]);
-                ]]]);
+                ]]]]);
 			} else {
 				$contentId = substr(md5(uniqid('', true)), 0, 10);
 				$nonce = Helpers::getNonce();
@@ -248,8 +246,6 @@ class Bar
 				foreach($session as $line) {
                     echo "Tracy.Debug.$method(", json_encode($line['content']), ', ', json_encode($line['dumps']), ');';
                 }
-                $sessionHandler->setValue($sessionKey, null);
-				echo "Tracy.Debug.$method(", json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
                 $sessionHandler->setValue(['bar' => [$m[2] . $m[1] => null]]);
 			}
 
