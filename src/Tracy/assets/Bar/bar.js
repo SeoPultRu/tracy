@@ -263,7 +263,7 @@
 			});
 
 			a.addEventListener('mouseover', function(e) {
-				if (isTargetChanged(e.relatedTarget, this) && this.rel && this.rel !== 'close' && !elem.classList.contains('tracy-dragged')) {
+				if (isTargetChanged(e.relatedTarget, this) && this.rel && ['close', 'show_ajax', 'hide_ajax'].indexOf(this.rel) === -1 && !elem.classList.contains('tracy-dragged')) {
 					var panel = Debug.panels[this.rel], link = this;
 					panel.focus(function() {
 						if (panel.is(Panel.PEEK)) {
@@ -282,7 +282,7 @@
 			});
 
 			a.addEventListener('mouseout', function(e) {
-				if (isTargetChanged(e.relatedTarget, this) && this.rel && this.rel !== 'close' && !elem.classList.contains('tracy-dragged')) {
+				if (isTargetChanged(e.relatedTarget, this) && this.rel && ['close', 'show_ajax', 'hide_ajax'].indexOf(this.rel) === -1 && !elem.classList.contains('tracy-dragged')) {
 					Debug.panels[this.rel].blur();
 				}
 			});
