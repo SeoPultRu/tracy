@@ -34,13 +34,21 @@ $tabs = function ($panels) {
 		<?php $tabs($row->panels) ?>
 		<li><a href="#" rel="close" title="close debug bar">&times;</a></li>
 	</ul>
+    <ul id="tracy-ajax-toggle">
+        <li>
+            <a href="#" rel="show_ajax" title="toggle ajax requests">
+                <span id="tracy-ajax-show-text">Show ajax</span>
+                <span id="tracy-ajax-hide-text">Hide ajax</span>
+            </a>
+        </li>
+    </ul>
 <?php 	endif; if ($row->type === 'redirect'): ?>
 	<ul>
 		<li><span title="Previous request before redirect">redirect</span></li>
 		<?php $tabs($row->panels) ?>
 	</ul>
 <?php  endif; if ($row->type === 'ajax'): ?>
-	<ul>
+	<ul class="tracy-ajax-bar">
 		<li title="<?= $row->url; ?>">AJAX</li>
 		<?php $tabs($row->panels) ?>
 	</ul>

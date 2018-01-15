@@ -233,6 +233,10 @@
 			a.addEventListener('click', function(e) {
 				if (this.rel === 'close') {
 					_this.close();
+				} else if(this.rel === 'show_ajax') {
+					_this.toggleAjax(this, true);
+				} else if(this.rel === 'hide_ajax') {
+					_this.toggleAjax(this, false);
 
 				} else if (this.rel) {
 					var panel = Debug.panels[this.rel];
@@ -297,6 +301,17 @@
 
 	Bar.prototype.close = function() {
 		document.getElementById('tracy-debug').style.display = 'none';
+	};
+
+	Bar.prototype.toggleAjax = function(el, toggle) {
+		var panels = this.elem.querySelectorAll('.tracy-ajax-bar');
+
+		for(var i = 0; i < panels.length; i++) {
+			panels[i].style.display = toggle ? 'block' : 'none';
+		}
+
+		document.getElementById('tracy-ajax-show-text').style.display = toggle ? 'inline' : 'none';
+		document.getElementById('tracy-ajax-hide-text').style.display = toggle ? 'none' : 'inline';
 	};
 
 	Bar.prototype.savePosition = function() {

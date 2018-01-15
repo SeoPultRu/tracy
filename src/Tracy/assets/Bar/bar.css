@@ -192,6 +192,14 @@ body#tracy-debug { /* in popup window */
 	cursor: move;
 }
 
+#tracy-debug-bar .tracy-ajax-bar {
+	display: none;
+}
+
+#tracy-ajax-toggle, #tracy-ajax-hide-text {
+	display: none;
+}
+
 #tracy-debug-logo svg {
 	width: 3.4em;
 	margin: 0 .2em 0 .5em;
