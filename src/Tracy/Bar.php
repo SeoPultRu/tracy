@@ -239,7 +239,8 @@ class Bar
 				$this->renderAssets();
 			}
 
-            $session = $sessionHandler->getValue(['bar', $m[2] . $m[1]]);
+            $sessionKey = ['bar', $m[2] . $m[1]];
+            $session = $sessionHandler->getValue($sessionKey);
 
 			if ($session) {
 				$method = $m[1] ? 'loadAjax' : 'init';
@@ -249,11 +250,12 @@ class Bar
                 $sessionHandler->setValue(['bar' => [$m[2] . $m[1] => null]]);
 			}
 
-            $session = $sessionHandler->getValue(['bluescreen', $m[2]]);
+			$sessionKey = ['bluescreen', $m[2]];
+            $session = $sessionHandler->getValue($sessionKey);
 
 			if ($session) {
 				echo 'Tracy.BlueScreen.loadAjax(', json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-                $sessionHandler->setValue(['bluescreen' => [$m[2] => null]]);
+                $sessionHandler->setValue($sessionKey, null);
 			}
 
 			return true;

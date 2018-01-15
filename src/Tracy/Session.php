@@ -14,14 +14,12 @@ class Session implements ISession
      */
     public function activate()
     {
-        if (!$this->isActive()) {
-            ini_set('session.use_cookies', '1');
-            ini_set('session.use_only_cookies', '1');
-            ini_set('session.use_trans_sid', '0');
-            ini_set('session.cookie_path', '/');
-            ini_set('session.cookie_httponly', '1');
-            session_start();
-        }
+        ini_set('session.use_cookies', '1');
+        ini_set('session.use_only_cookies', '1');
+        ini_set('session.use_trans_sid', '0');
+        ini_set('session.cookie_path', '/');
+        ini_set('session.cookie_httponly', '1');
+        session_start();
     }
 
     /**
@@ -35,17 +33,24 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function setValue($key, $value = null)
+    public function setValue($key, $value)
     {
         if (!isset($_SESSION[$this->globalKey])) {
             $_SESSION[$this->globalKey] = [];
         }
 
-        if(!is_array($key)) {
-            $_SESSION[$this->globalKey][$key] = $value;
-        } else {
-            $_SESSION[$this->globalKey] = array_replace_recursive($_SESSION[$this->globalKey], $key);
+        $keys = (array)$key;
+        $node = &$_SESSION[$this->globalKey];
+
+        foreach ($keys as $keyNode) {
+            if (!isset($node[$keyNode])) {
+                $node[$keyNode] = [];
+            }
+
+            $node = &$node[$keyNode];
         }
+
+        $node = $value;
     }
 
     /**
