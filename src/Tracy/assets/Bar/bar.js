@@ -350,14 +350,10 @@
 		});
 
 		var ajaxBar = document.getElementById('tracy-ajax-bar');
-		if (ajaxBar) {
-			ajaxBar.parentNode.removeChild(ajaxBar);
-		}
 
 		Debug.layer.insertAdjacentHTML('beforeend', content);
 		evalScripts(Debug.layer);
-		ajaxBar = document.getElementById('tracy-ajax-bar');
-		document.getElementById(Bar.prototype.id).appendChild(ajaxBar);
+		ajaxBar.appendChild(ajaxBar);
 
 		forEach(document.querySelectorAll('.tracy-panel'), function(panel) {
 			if (!Debug.panels[panel.id]) {
