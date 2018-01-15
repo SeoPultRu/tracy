@@ -345,7 +345,9 @@
 	Debug.loadAjax = function(content, dumps) {
 		Debug.layer.insertAdjacentHTML('beforeend', content);
 		evalScripts(Debug.layer);
-		document.getElementById(Bar.prototype.id).appendChild(Debug.layer.lastElementChild);
+
+		var ajaxBar = Debug.layer.lastElementChild;
+		document.getElementById(Bar.prototype.id).appendChild(ajaxBar);
 
 		forEach(document.querySelectorAll('.tracy-panel'), function(panel) {
 			if (!Debug.panels[panel.id]) {
