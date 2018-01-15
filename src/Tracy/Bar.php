@@ -101,7 +101,8 @@ class Bar
                 ];
 
                 $contentId = $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax';
-                $barQueue = $sessionHandler->getValue(['bar', $contentId]);
+                $sessionKey = ['bar', $contentId];
+                $barQueue = $sessionHandler->getValue($sessionKey);
 
                 if (!$barQueue) {
                     $barQueue = [];
@@ -113,7 +114,7 @@ class Bar
                     'time' => time(),
                 ];
 
-				$sessionHandler->setValue(['bar', $contentId], $barQueue);
+				$sessionHandler->setValue($sessionKey, $barQueue);
 			}
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
