@@ -90,18 +90,18 @@ class Bar
 
 		if (Helpers::isAjax()) {
 			if ($useSession) {
-                $contentId = $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax';
-			    $barQueue = $sessionHandler->getValue(['bar', $contentId]);
-
-			    if (!$barQueue) {
-			        $barQueue = [];
-                }
-
 				$row = (object) [
 				    'type' => 'ajax',
                     'url' => $_SERVER['REQUEST_URI'],
                     'panels' => $this->renderPanels('-'.uniqid()),
                 ];
+
+                $contentId = $_SERVER['HTTP_X_TRACY_AJAX'] . '-ajax';
+                $barQueue = $sessionHandler->getValue(['bar', $contentId]);
+
+                if (!$barQueue) {
+                    $barQueue = [];
+                }
 
                 $barQueue[] = [
                     'content' => self::renderHtmlRows([$row]),
@@ -109,7 +109,7 @@ class Bar
                     'time' => time(),
                 ];
 
-				$sessionHandler->setValue(['bar' => [$contentId => $barQueue]]);
+				$sessionHandler->setValue(['bar', $contentId], $barQueue);
 			}
 
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
@@ -137,11 +137,11 @@ class Bar
 			$content = self::renderHtmlRows($rows);
 
 			if ($this->contentId) {
-			    $sessionHandler->setValue(['bar' => [$this->contentId => [[
+			    $sessionHandler->setValue(['bar', $this->contentId], [[
 			        'content' => $content,
                     'dumps' => $dumps,
                     'time' => time(),
-                ]]]]);
+                ]]);
 			} else {
 				$contentId = substr(md5(uniqid('', true)), 0, 10);
 				$nonce = Helpers::getNonce();
@@ -247,7 +247,7 @@ class Bar
 				foreach($session as $line) {
                     echo "Tracy.Debug.$method(", json_encode($line['content']), ', ', json_encode($line['dumps']), ');';
                 }
-                $sessionHandler->setValue(['bar' => [$m[2] . $m[1] => null]]);
+                $sessionHandler->setValue($sessionKey, null);
 			}
 
 			$sessionKey = ['bluescreen', $m[2]];
