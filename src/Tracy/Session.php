@@ -81,7 +81,7 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function pushValue($key, $value)
+    public function addValue($key, $value)
     {
         $current = $this->getValue($key);
 
@@ -91,6 +91,33 @@ class Session implements ISession
 
         $current[] = $value;
         $this->setValue($key, $current);
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function delValue($key, $value)
+    {
+        if (!isset($_SESSION[$this->globalKey])) {
+            $_SESSION[$this->globalKey] = [];
+        }
+
+        $keys = (array)$key;
+        $node = &$_SESSION[$this->globalKey];
+
+        foreach ($keys as $keyNode) {
+            if (!isset($node[$keyNode])) {
+                $node[$keyNode] = [];
+            }
+
+            $node = &$node[$keyNode];
+        }
+
+        $k = array_search($value, $node, true);
+
+        if ($k !== false) {
+            unset($node[$k]);
+        }
     }
 
     /**
