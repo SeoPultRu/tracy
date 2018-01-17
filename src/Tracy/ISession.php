@@ -28,7 +28,14 @@ interface ISession
      * @param mixed $value
      * @return void
      */
-    public function setValue($key, $value = null);
+    public function setValue($key, $value);
+
+    /**
+     * @param string|array $key
+     * @param mixed $value
+     * @return void
+     */
+    public function pushValue($key, $value);
 
     /**
      * Returns value by key

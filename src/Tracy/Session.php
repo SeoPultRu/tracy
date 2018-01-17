@@ -41,7 +41,7 @@ class Session implements ISession
             $_SESSION[$this->globalKey] = [];
         }
 
-        if(!is_array($key)) {
+        if (!is_array($key)) {
             $_SESSION[$this->globalKey][$key] = $value;
         } else {
             $_SESSION[$this->globalKey] = array_replace_recursive($_SESSION[$this->globalKey], $key);
@@ -69,5 +69,20 @@ class Session implements ISession
         }
 
         return $node;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function pushValue($key, $value)
+    {
+        $current = $this->getValue($key);
+
+        if ($current === null) {
+            $current = [];
+        }
+
+        $current[] = $value;
+        $this->setValue($key, $current);
     }
 }
