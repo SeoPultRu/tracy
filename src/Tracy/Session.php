@@ -35,17 +35,24 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function setValue($key, $value = null)
+    public function setValue($key, $value)
     {
         if (!isset($_SESSION[$this->globalKey])) {
             $_SESSION[$this->globalKey] = [];
         }
 
-        if (!is_array($key)) {
-            $_SESSION[$this->globalKey][$key] = $value;
-        } else {
-            $_SESSION[$this->globalKey] = array_replace_recursive($_SESSION[$this->globalKey], $key);
+        $keys = (array)$key;
+        $node = &$_SESSION[$this->globalKey];
+
+        foreach ($keys as $keyNode) {
+            if (!isset($node[$keyNode])) {
+                $node[$keyNode] = [];
+            }
+
+            $node = &$node[$keyNode];
         }
+
+        $node = $value;
     }
 
     /**
