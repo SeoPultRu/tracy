@@ -44,4 +44,10 @@ interface ISession
      * @return mixed
      */
     public function getValue($key);
+
+    /**
+     * @param string|array $key
+     * @return void
+     */
+    public function clearValue($key);
 }

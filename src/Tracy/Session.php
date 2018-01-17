@@ -92,4 +92,29 @@ class Session implements ISession
         $current[] = $value;
         $this->setValue($key, $current);
     }
+
+    /**
+     * @param string|array $key
+     * @return void
+     */
+    public function clearValue($key)
+    {
+        if (isset($_SESSION[$this->globalKey])) {
+            $keys = (array)$key;
+            $last = sizeof($keys) - 1;
+            $node = &$_SESSION[$this->globalKey];
+
+            foreach (array_keys($keys) as $i => $keyNode) {
+                if (!isset($node[$keyNode])) {
+                    return;
+                }
+
+                if ($i !== $last) {
+                    $node = &$node[$keyNode];
+                } else {
+                    unset($node[$keyNode]);
+                }
+            }
+        }
+    }
 }
