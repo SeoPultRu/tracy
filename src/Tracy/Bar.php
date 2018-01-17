@@ -128,7 +128,6 @@ class Bar
 
 				$sessionHandler->setValue($sessionKey, $barQueue);
 			}
-
 		} elseif (preg_match('#^Location:#im', implode("\n", headers_list()))) { // redirect
 			if ($useSession) {
                 $redirectQueue = $sessionHandler->getValue('redirect');

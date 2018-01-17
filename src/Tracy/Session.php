@@ -14,12 +14,14 @@ class Session implements ISession
      */
     public function activate()
     {
-        ini_set('session.use_cookies', '1');
-        ini_set('session.use_only_cookies', '1');
-        ini_set('session.use_trans_sid', '0');
-        ini_set('session.cookie_path', '/');
-        ini_set('session.cookie_httponly', '1');
-        session_start();
+        if (!$this->isActive()) {
+            ini_set('session.use_cookies', '1');
+            ini_set('session.use_only_cookies', '1');
+            ini_set('session.use_trans_sid', '0');
+            ini_set('session.cookie_path', '/');
+            ini_set('session.cookie_httponly', '1');
+            session_start();
+        }
     }
 
     /**
@@ -74,5 +76,20 @@ class Session implements ISession
         }
 
         return $node;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function pushValue($key, $value)
+    {
+        $current = $this->getValue($key);
+
+        if ($current === null) {
+            $current = [];
+        }
+
+        $current[] = $value;
+        $this->setValue($key, $current);
     }
 }
