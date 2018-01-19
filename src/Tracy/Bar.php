@@ -78,19 +78,21 @@ class Bar
         $sessionHandler = Debugger::getSessionHandler();
         $useSession = $this->useSession && $sessionHandler->isActive();
 
-        foreach (['redirect', 'bluescreen'] as $key) {
-            $queue = $sessionHandler->get($key);
+        if (!$sessionHandler->hasHistoryManagement()) {
+            foreach (['redirect', 'bluescreen'] as $key) {
+                $queue = $sessionHandler->get($key);
 
-            if ($key === 'redirect') {
-                $queue = array_slice((array)$queue, -10, null, true);
+                if ($key === 'redirect') {
+                    $queue = array_slice((array)$queue, -10, null, true);
+                }
+
+                $queue = array_filter((array)$queue, function ($item) {
+                    return isset($item['time']) && $item['time'] > time() - 60;
+                });
+
+                $sessionHandler->set($key, $queue);
             }
-
-            $queue = array_filter((array)$queue, function ($item) {
-                return isset($item['time']) && $item['time'] > time() - 60;
-            });
-
-            $sessionHandler->set($key, $queue);
-		}
+        }
 
         foreach (['bar'] as $key) {
             $queue = $sessionHandler->get($key);
