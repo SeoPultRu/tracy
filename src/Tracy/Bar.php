@@ -143,7 +143,7 @@ class Bar
         } elseif (Helpers::isHtmlMode()) {
             $rows[] = (object)['type' => 'main', 'panels' => $this->renderPanels()];
             $dumps = Dumper::fetchLiveData();
-            foreach (array_reverse((array)$sessionHandler->getValue('redirect')) as $info) {
+            foreach (array_reverse((array)$sessionHandler->get('redirect')) as $info) {
                 $rows[] = (object)['type' => 'redirect', 'panels' => $info['panels']];
                 $dumps += $info['dumps'];
             }
