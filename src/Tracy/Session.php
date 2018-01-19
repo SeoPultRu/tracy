@@ -106,4 +106,12 @@ class Session implements ISession
             unset($node[$last]);
         }
     }
+
+    /**
+     * @inheritdoc
+     */
+    public function hasHistoryManagement()
+    {
+        return false;
+    }
 }

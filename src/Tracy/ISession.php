@@ -31,6 +31,8 @@ interface ISession
     public function set($key, $value);
 
     /**
+     * Adds value to key collection
+     *
      * @param string|array $key
      * @param mixed $value
      * @return void
@@ -38,6 +40,8 @@ interface ISession
     public function add($key, $value);
 
     /**
+     * Deletes value from key collection
+     *
      * @param string|array $key
      * @param mixed $value
      * @return void
@@ -53,8 +57,17 @@ interface ISession
     public function get($key);
 
     /**
+     * Clear key
+     *
      * @param string|array $key
      * @return void
      */
     public function clear($key);
+
+    /**
+     * Returns true if don't need to clear the history
+     *
+     * @return bool
+     */
+    public function hasHistoryManagement();
 }

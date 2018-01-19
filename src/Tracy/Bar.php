@@ -78,15 +78,17 @@ class Bar
         $sessionHandler = Debugger::getSessionHandler();
         $useSession = $this->useSession && $sessionHandler->isActive();
 
-		foreach (['bar', 'redirect', 'bluescreen'] as $key) {
-			$queue = $sessionHandler->get($key);
-			$queue = array_slice((array) $queue, -10, null, true);
-			$queue = array_filter($queue, function ($item) {
-				return isset($item['time']) && $item['time'] > time() - 60;
-			});
+        if (!$sessionHandler->hasHistoryManagement()) {
+            foreach (['bar', 'redirect', 'bluescreen'] as $key) {
+                $queue = $sessionHandler->get($key);
+                $queue = array_slice((array)$queue, -10, null, true);
+                $queue = array_filter($queue, function ($item) {
+                    return isset($item['time']) && $item['time'] > time() - 60;
+                });
 
-            $sessionHandler->set($key, $queue);
-		}
+                $sessionHandler->set($key, $queue);
+            }
+        }
 
 		if (Helpers::isAjax()) {
 			if ($useSession) {
