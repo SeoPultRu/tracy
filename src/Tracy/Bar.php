@@ -92,22 +92,22 @@ class Bar
 
                 $sessionHandler->set($key, $queue);
             }
-        }
 
-        foreach (['bar'] as $key) {
-            $queue = $sessionHandler->get($key);
+            foreach (['bar'] as $key) {
+                $queue = $sessionHandler->get($key);
 
-            foreach ((array)$queue as $k => $line) {
-                $localKey = ['bar', $key];
+                foreach ((array)$queue as $k => $line) {
+                    $localKey = ['bar', $key];
 
-                foreach($line as $item) {
-                    if(!isset($item['time']) || $item['time'] <= time() - 60) {
-                        $sessionHandler->delete($localKey, $item);
+                    foreach($line as $item) {
+                        if(!isset($item['time']) || $item['time'] <= time() - 60) {
+                            $sessionHandler->delete($localKey, $item);
+                        }
                     }
-                }
 
-                if (!$line) {
-                    $sessionHandler->clear($localKey);
+                    if (!$line) {
+                        $sessionHandler->clear($localKey);
+                    }
                 }
             }
         }
