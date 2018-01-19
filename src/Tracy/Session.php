@@ -35,7 +35,16 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function setValue($key, $value)
+    public function set($key, $value)
+    {
+        $node = &$this->get($key);
+        $node = $value;
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function &get($key)
     {
         if (!isset($_SESSION[$this->globalKey])) {
             $_SESSION[$this->globalKey] = [];
@@ -50,29 +59,6 @@ class Session implements ISession
             }
 
             $node = &$node[$keyNode];
-        }
-
-        $node = $value;
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function getValue($key)
-    {
-        if (!isset($_SESSION[$this->globalKey])) {
-            $_SESSION[$this->globalKey] = [];
-        }
-
-        $keys = (array)$key;
-        $node = $_SESSION[$this->globalKey];
-
-        foreach ($keys as $keyNode) {
-            if (!isset($node[$keyNode])) {
-                return null;
-            }
-
-            $node = $node[$keyNode];
         }
 
         return $node;
@@ -81,67 +67,43 @@ class Session implements ISession
     /**
      * @inheritdoc
      */
-    public function addValue($key, $value)
+    public function add($key, $value)
     {
-        $current = $this->getValue($key);
+        $current = &$this->get($key);
 
-        if ($current === null) {
+        if (!is_array($current)) {
             $current = [];
         }
 
         $current[] = $value;
-        $this->setValue($key, $current);
     }
 
     /**
      * @inheritdoc
      */
-    public function delValue($key, $value)
+    public function delete($key, $value)
     {
-        if (!isset($_SESSION[$this->globalKey])) {
-            $_SESSION[$this->globalKey] = [];
-        }
+        $node = &$this->get($key);
 
-        $keys = (array)$key;
-        $node = &$_SESSION[$this->globalKey];
-
-        foreach ($keys as $keyNode) {
-            if (!isset($node[$keyNode])) {
-                $node[$keyNode] = [];
+        if (is_array($node)) {
+            $k = array_search($value, $node, true);
+            if ($k !== false) {
+                unset($node[$k]);
             }
-
-            $node = &$node[$keyNode];
-        }
-
-        $k = array_search($value, $node, true);
-
-        if ($k !== false) {
-            unset($node[$k]);
         }
     }
 
     /**
-     * @param string|array $key
-     * @return void
+     * @inheritdoc
      */
-    public function clearValue($key)
+    public function clear($key)
     {
-        if (isset($_SESSION[$this->globalKey])) {
-            $keys = (array)$key;
-            $last = sizeof($keys) - 1;
-            $node = &$_SESSION[$this->globalKey];
+        $keys = (array)$key;
+        $last = array_pop($keys);
+        $node = &$this->get($keys);
 
-            foreach (array_keys($keys) as $i => $keyNode) {
-                if (!isset($node[$keyNode])) {
-                    return;
-                }
-
-                if ($i !== $last) {
-                    $node = &$node[$keyNode];
-                } else {
-                    unset($node[$keyNode]);
-                }
-            }
+        if (is_array($node)) {
+            unset($node[$last]);
         }
     }
 }

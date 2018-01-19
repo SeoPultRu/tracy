@@ -79,7 +79,7 @@ class Bar
         $useSession = $this->useSession && $sessionHandler->isActive();
 
         foreach (['redirect', 'bluescreen'] as $key) {
-            $queue = $sessionHandler->getValue($key);
+            $queue = $sessionHandler->get($key);
 
             if ($key === 'redirect') {
                 $queue = array_slice((array)$queue, -10, null, true);
@@ -89,11 +89,11 @@ class Bar
                 return isset($item['time']) && $item['time'] > time() - 60;
             });
 
-            $sessionHandler->setValue($key, $queue);
-        }
+            $sessionHandler->set($key, $queue);
+		}
 
         foreach (['bar'] as $key) {
-            $queue = $sessionHandler->getValue($key);
+            $queue = $sessionHandler->get($key);
 
             foreach ((array)$queue as $k => &$line) {
                 $line = array_filter((array)$line, function ($item) {
@@ -105,7 +105,7 @@ class Bar
                 }
             }
 
-            $sessionHandler->setValue($key, $queue);
+            $sessionHandler->set($key, $queue);
         }
 
         if (Helpers::isAjax()) {
@@ -118,7 +118,7 @@ class Bar
                     'panels' => $this->renderPanels('-' . uniqid()),
                 ];
 
-                $sessionHandler->pushValue(['bar', $contentId], [
+                $sessionHandler->add(['bar', $contentId], [
                     'content' => self::renderHtmlRows([$row]),
                     'dumps' => Dumper::fetchLiveData(),
                     'time' => time(),
@@ -130,7 +130,7 @@ class Bar
                 Dumper::fetchLiveData();
                 Dumper::$livePrefix = $id . 'p';
 
-                $sessionHandler->pushValue('redirect', [
+                $sessionHandler->add('redirect', [
                     'panels' => $this->renderPanels('-r' . $id),
                     'dumps' => Dumper::fetchLiveData(),
                     'time' => time(),
@@ -143,11 +143,11 @@ class Bar
                 $rows[] = (object)['type' => 'redirect', 'panels' => $info['panels']];
                 $dumps += $info['dumps'];
             }
-            $sessionHandler->setValue('redirect', null);
+            $sessionHandler->set('redirect', null);
             $content = self::renderHtmlRows($rows);
 
             if ($this->contentId) {
-                $sessionHandler->setValue(['bar', $this->contentId], [[
+                $sessionHandler->set(['bar', $this->contentId], [[
                     'content' => $content,
                     'dumps' => $dumps,
                     'time' => time(),
@@ -251,7 +251,7 @@ class Bar
             }
 
             $sessionKey = ['bar', $m[2] . $m[1]];
-            $session = $sessionHandler->getValue($sessionKey);
+            $session = $sessionHandler->get($sessionKey);
 
             if ($session) {
                 $method = $m[1] ? 'loadAjax' : 'init';
@@ -260,16 +260,16 @@ class Bar
                     echo "Tracy.Debug.$method(", json_encode($line['content']), ', ', json_encode($line['dumps']), ');';
                 }
 
-                $sessionHandler->clearValue($sessionKey);
+                $sessionHandler->clear($sessionKey);
             }
 
             $sessionKey = ['bluescreen', $m[2]];
-            $session = $sessionHandler->getValue($sessionKey);
+            $session = $sessionHandler->get($sessionKey);
 
-            if ($session) {
-                echo 'Tracy.BlueScreen.loadAjax(', json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
-                $sessionHandler->clearValue($sessionKey);
-            }
+			if ($session) {
+				echo 'Tracy.BlueScreen.loadAjax(', json_encode($session['content']), ', ', json_encode($session['dumps']), ');';
+                $sessionHandler->clear($sessionKey);
+			}
 
             return true;
         }
