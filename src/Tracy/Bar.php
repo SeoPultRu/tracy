@@ -95,17 +95,19 @@ class Bar
         foreach (['bar'] as $key) {
             $queue = $sessionHandler->get($key);
 
-            foreach ((array)$queue as $k => &$line) {
-                $line = array_filter((array)$line, function ($item) {
-                    return isset($item['time']) && $item['time'] > time() - 60;
-                });
+            foreach ((array)$queue as $k => $line) {
+                $localKey = ['bar', $key];
+
+                foreach($line as $item) {
+                    if(!isset($item['time']) || $item['time'] <= time() - 60) {
+                        $sessionHandler->delete($localKey, $item);
+                    }
+                }
 
                 if (!$line) {
-                    unset($queue[$k]);
+                    $sessionHandler->clear($localKey);
                 }
             }
-
-            $sessionHandler->set($key, $queue);
         }
 
         if (Helpers::isAjax()) {
