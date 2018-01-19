@@ -63,7 +63,7 @@ class BlueScreen
 			ob_start(function () {});
 			$this->renderTemplate($exception, __DIR__ . '/assets/BlueScreen/content.phtml');
 			$contentId = $_SERVER['HTTP_X_TRACY_AJAX'];
-			$sessionHandler->setValue(['bluescreen', $contentId], [
+			$sessionHandler->set(['bluescreen', $contentId], [
 			    'content' => ob_get_clean(),
                 'dumps' => Dumper::fetchLiveData(),
                 'time' => time(),

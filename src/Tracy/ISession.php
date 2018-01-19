@@ -28,21 +28,21 @@ interface ISession
      * @param mixed $value
      * @return void
      */
-    public function setValue($key, $value);
+    public function set($key, $value);
 
     /**
      * @param string|array $key
      * @param mixed $value
      * @return void
      */
-    public function addValue($key, $value);
+    public function add($key, $value);
 
     /**
      * @param string|array $key
      * @param mixed $value
      * @return void
      */
-    public function delValue($key, $value);
+    public function delete($key, $value);
 
     /**
      * Returns value by key
@@ -50,11 +50,11 @@ interface ISession
      * @param string|array $key
      * @return mixed
      */
-    public function getValue($key);
+    public function get($key);
 
     /**
      * @param string|array $key
      * @return void
      */
-    public function clearValue($key);
+    public function clear($key);
 }
