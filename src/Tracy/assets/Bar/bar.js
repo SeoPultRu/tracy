@@ -225,6 +225,7 @@
 
 		this.initTabs(this.elem);
 		this.restorePosition();
+		this.restoreAjax();
 	};
 
 	Bar.prototype.initTabs = function(elem) {
@@ -235,9 +236,9 @@
 				if (this.rel === 'close') {
 					_this.close();
 				} else if(this.rel === 'show_ajax') {
-					_this.toggleAjax(this, true);
+					_this.toggleAjax(true);
 				} else if(this.rel === 'hide_ajax') {
-					_this.toggleAjax(this, false);
+					_this.toggleAjax(false);
 
 				} else if (this.rel) {
 					var panel = Debug.panels[this.rel];
@@ -304,8 +305,9 @@
 		document.getElementById('tracy-debug').style.display = 'none';
 	};
 
-	Bar.prototype.toggleAjax = function(el, toggle) {
-		var panels = this.elem.querySelectorAll('.tracy-ajax-bar');
+	Bar.prototype.toggleAjax = function(toggle, save) {
+		var panels = this.elem.querySelectorAll('.tracy-ajax-bar')
+			, el = document.getElementById('tracy-ajax-toggler');
 
 		for(var i = 0; i < panels.length; i++) {
 			panels[i].style.display = toggle ? '' : 'none';
@@ -316,6 +318,10 @@
 
 		el.setAttribute('rel', toggle ? 'hide_ajax' : 'show_ajax');
 		this.ajaxShown = toggle;
+
+		if (save !== false) {
+			localStorage.setItem(this.id + '-ajax', this.ajaxShown ? 'true' : 'false');
+		}
 	};
 
 	Bar.prototype.savePosition = function() {
@@ -328,6 +334,10 @@
 		if (pos) {
 			setPosition(document.getElementById(this.id), pos);
 		}
+	};
+
+	Bar.prototype.restoreAjax = function() {
+		this.toggleAjax(this.ajaxShown = localStorage.getItem(this.id+'-ajax') === 'true', false);
 	};
 
 
