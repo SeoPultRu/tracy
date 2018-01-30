@@ -421,7 +421,10 @@
 
 		XMLHttpRequest.prototype.open = function() {
 			oldOpen.apply(this, arguments);
-			if (window.TracyAutoRefresh !== false && arguments[1].indexOf('//') <= 0 || arguments[1].indexOf(location.origin + '/') === 0) {
+
+			var path = arguments[1].split('?', 2)[0];
+
+			if (window.TracyAutoRefresh !== false && path.indexOf('//') <= 0 || path.indexOf(location.origin + '/') === 0) {
 				this.setRequestHeader('X-Tracy-Ajax', header);
 				this.addEventListener('load', function() {
 					if (this.getAllResponseHeaders().match(/^X-Tracy-Ajax: 1/mi)) {
