@@ -12,8 +12,6 @@
 	top: 0;
 	width: 100%;
 	text-align: left;
-	max-height: 100%;
-	overflow: auto;
 }
 
 #tracy-bs * {
@@ -52,8 +50,13 @@
 	color: #085AA3;
 }
 
-#tracy-bs-content {
+#tracy-bs-content, #tracy-bs-footer {
 	position: relative;
+}
+
+#tracy-bs-content {
+	max-height: 100vh;
+	overflow: auto;
 }
 
 #tracy-bs-toggle {
@@ -64,6 +67,7 @@
 	background: #CD1818;
 	color: white !important;
 	padding: 3px;
+	z-index: 1;
 }
 
 #tracy-bs-error {

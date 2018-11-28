@@ -325,12 +325,14 @@ $code = $exception->getCode() ? ' #' . $exception->getCode() : '';
 		<?php endforeach ?>
 
 
-		<ul>
-			<li>Report generated at <?= @date('Y/m/d H:i:s') // @ timezone may not be set ?></li>
-			<li><?php if ($sourceIsUrl): ?><a href="<?= Helpers::escapeHtml($source) ?>"><?php endif ?><?= Helpers::escapeHtml($source) ?><?php if ($sourceIsUrl): ?></a><?php endif ?></li>
-			<?php foreach ($info as $item): ?><li><?= Helpers::escapeHtml($item) ?></li><?php endforeach ?>
-		</ul>
+		<div id="tracy-bs-footer">
+			<ul>
+				<li>Report generated at <?= @date('Y/m/d H:i:s') // @ timezone may not be set ?></li>
+				<li><?php if ($sourceIsUrl): ?><a href="<?= Helpers::escapeHtml($source) ?>"><?php endif ?><?= Helpers::escapeHtml($source) ?><?php if ($sourceIsUrl): ?></a><?php endif ?></li>
+				<?php foreach ($info as $item): ?><li><?= Helpers::escapeHtml($item) ?></li><?php endforeach ?>
+			</ul>
 
-		<div id="tracy-bs-logo"><a href="https://tracy.nette.org" rel="noreferrer"></a></div>
+			<div id="tracy-bs-logo"><a href="https://tracy.nette.org" rel="noreferrer"></a></div>
+		</div>
 	</div>
 </div>
