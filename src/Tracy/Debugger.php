@@ -16,7 +16,7 @@ use Tracy;
  */
 class Debugger
 {
-	const VERSION = '2.4.10';
+	const VERSION = '2.6.0';
 
 	/** server modes for Debugger::enable() */
 	const
@@ -130,6 +130,11 @@ class Debugger
      * @var ISession
      */
 	private static $sessionHandler;
+
+    /**
+     * @var string
+     */
+	private static $charset;
 
 
 	/**
@@ -477,6 +482,11 @@ class Debugger
 	{
 		if (!self::$bar) {
 			self::$bar = new Bar;
+
+			if (self::$charset) {
+			    self::$bar->setCharset(self::$charset);
+            }
+
 			self::$bar->addPanel($info = new DefaultBarPanel('info'), 'Tracy:info');
 			$info->cpuUsage = self::$cpuUsage;
 			self::$bar->addPanel(new DefaultBarPanel('errors'), 'Tracy:errors'); // filled by errorHandler()
@@ -538,6 +548,14 @@ class Debugger
         }
 
         return self::$sessionHandler;
+    }
+
+    /**
+     * @param string $charset
+     * @return void
+     */
+    public static function setCharset($charset) {
+        self::$charset = $charset;
     }
 
 
