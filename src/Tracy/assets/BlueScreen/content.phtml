@@ -24,7 +24,7 @@ $code = $exception->getCode() ? ' #' . $exception->getCode() : '';
 ?>
 <div id="tracy-bs">
 	<a id="tracy-bs-toggle" href="#" class="tracy-toggle"></a>
-	<div>
+	<div id="tracy-bs-content">
 		<div id="tracy-bs-error" class="panel">
 			<?php if ($exception->getMessage()): ?><p><?= Helpers::escapeHtml($title . $code) ?></p><?php endif ?>
 

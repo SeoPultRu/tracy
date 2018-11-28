@@ -12,6 +12,8 @@
 	top: 0;
 	width: 100%;
 	text-align: left;
+	max-height: 100%;
+	overflow: auto;
 }
 
 #tracy-bs * {
@@ -48,6 +50,10 @@
 #tracy-bs a:hover,
 #tracy-bs a:focus {
 	color: #085AA3;
+}
+
+#tracy-bs-content {
+	position: relative;
 }
 
 #tracy-bs-toggle {
